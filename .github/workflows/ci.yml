@@ -17,9 +17,15 @@ jobs:
             os: ubuntu-latest
           - component: clippy
             cargo_cmd: clippy --locked --all-targets -- -D warnings -A unknown-lints -A clippy::type_complexity -A clippy::new-without-default
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Install rust
         uses: ./.github/actions/rust-toolchain
@@ -85,9 +91,14 @@ jobs:
       DIST_EXEC_STRATEGY: ${{ matrix.dist_exec_strategy }}
       SCCACHE_SANDBOX: ${{ matrix.sccache_sandbox }}
       SCCACHE_LOG: ${{ matrix.sccache_log }}
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Install bubblewrap (needed for dist test suite)
         if: contains(matrix.extra_desc, 'dist-worker')
@@ -143,9 +154,15 @@ jobs:
           - os: windows-2019
             target: x86_64-pc-windows-msvc
             rustflags: -Ctarget-feature=+crt-static
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Install rust
         uses: ./.github/actions/rust-toolchain
@@ -214,10 +231,15 @@ jobs:
     #          - os: windows-2019
     #            rustc: nightly
     env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
       RUST_BACKTRACE: 1
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Install rust
         uses: ./.github/actions/rust-toolchain
@@ -273,8 +295,13 @@ jobs:
         job:
           - { os: macos-12 }
         release: ["13.1"]
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - uses: actions/checkout@v3
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
       - name: Prepare, build and test
         uses: vmactions/freebsd-vm@v0
         with:
